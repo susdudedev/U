@@ -1,9 +1,14 @@
 import builtins
 import loader
+import sys
 inglobals = {}
+sym2func = {"+": "add", "-": "subtract", "*": "multiply", "/": "divide", "^": "exp", ">": "gt", "<": "lt"}
 def execfile(k):
   loader.start(k)
+def importfile(name):
+   loader.start(name + ".u")
 def ci(s):
+    s = str(s)
     if s[0] in ('-', '+'):
         return s[1:].isdigit()
     return s.isdigit()
@@ -11,26 +16,12 @@ def print(a):
   builtins.print(a)
 def ask(a):
   return builtins.input(a + ": ")
-def math(a = 0, symbol = 0 ,b = False) :
-  if symbol == "+":
-    return add(a, b)
-  elif symbol == "-":
-    return subtract(a, b)
-  elif symbol == "*":
-    return multiply(a, b)
-  elif symbol == "/":
-    return divide(a, b)
-  elif symbol == "^":
-    return exp(a, b)
-  elif symbol == ">":
-    return gt(a, b)
-  elif symbol == "<":
-    return lt(a, b)
+def math(a = 0, symbol = 0 ,b = False):
+  builtins.exec(sym2func[symbol] + "(" + a + "," + b + ")")
 def variable(name, eqaul = 100, value = 100):
   if eqaul != 100:
     builtins.globals()["in" + name] = value
     inglobals[name] = value
-    print(value)
   else:
     return builtins.globals()["in" + name]
 def min(a = 0, b = 0):
@@ -88,7 +79,11 @@ def pyglobals():
 def globals():
   print(inglobals)
 def copyright():
-  print("Python's modified copyright info is below, if you use U please give credit")
   print(builtins.copyright())
 def exec(str):
   loader.run(str)
+#debug function
+def debug():
+  debug = debug == False
+def quit():
+  builtins.quit()
